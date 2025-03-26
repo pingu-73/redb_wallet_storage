@@ -261,7 +261,7 @@ impl RedbStore {
     ///
     /// let store = RedbStore::open("existing_wallet.redb").unwrap();
     /// ```
-    /// 
+    ///
     pub fn open<P>(file_path: P) -> Result<Self, RedbError>
     where
         P: AsRef<Path>,
@@ -292,7 +292,7 @@ impl RedbStore {
     ///
     /// let store = RedbStore::open_with_config("existing_wallet.redb", config).unwrap();
     /// ```
-    /// 
+    ///
     pub fn open_with_config<P>(file_path: P, config: redb::Builder) -> Result<Self, RedbError>
     where
         P: AsRef<Path>,
@@ -333,12 +333,29 @@ impl RedbStore {
         }
     }
 
-    // /// Get statistics about the database
-    // pub fn stats(&self) -> Result<redb::DatabaseStats, RedbError> {
-    //     Ok(self.db.stats()?)
-    // }
-
     /// Get statistics about the wallet table
+    ///
+    /// Returns statistics about the wallet data table, including the number of entries,
+    /// table size, and other metrics.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if:
+    /// - The database cannot be read
+    /// - The wallet table cannot be opened
+    ///
+    /// # Examples
+    ///
+    /// ```rust,no_run
+    /// use redb_wallet_storage::RedbStore;
+    ///
+    /// let store = RedbStore::open("wallet.redb").unwrap();
+    /// let stats = store.table_stats().unwrap();
+    ///
+    /// println!("Wallet table entries: {}", stats.entries());
+    /// println!("Wallet table size: {} bytes", stats.table_size());
+    /// ```
+    ///
     pub fn table_stats(&self) -> Result<redb::TableStats, RedbError> {
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(WALLET_TABLE)?;
@@ -346,6 +363,15 @@ impl RedbStore {
     }
 
     /// Get the changeset from the database
+    ///
+    /// Internal method that retrieves the stored wallet changeset from the database.
+    ///
+    /// # Returns
+    ///
+    /// - `Ok(Some(changeset))` if a changeset exists in the database
+    /// - `Ok(None)` if no changeset has been stored yet
+    /// - `Err(...)` if an error occurs during database access or deserialization
+    ///
     fn get_changeset(&self) -> Result<Option<ChangeSet>, RedbError> {
         let read_txn = self.db.begin_read()?;
         let table = read_txn.open_table(WALLET_TABLE)?;
@@ -362,6 +388,19 @@ impl RedbStore {
     }
 
     /// Store the changeset in the database
+    ///
+    /// Internal method that persists a wallet changeset to the database.
+    /// If the changeset is empty, this method does nothing.
+    ///
+    /// # Arguments
+    ///
+    /// * `changeset` - The wallet changeset to store
+    ///
+    /// # Returns
+    ///
+    /// - `Ok(())` if the changeset was successfully stored or was empty
+    /// - `Err(...)` if an error occurs during serialization or database access
+    ///
     fn store_changeset(&self, changeset: &ChangeSet) -> Result<(), RedbError> {
         // Skip if changeset is empty
         if changeset.is_empty() {
@@ -385,6 +424,9 @@ impl RedbStore {
 }
 
 /// Error type for redb storage operations
+/// This enum represents all possible errors that can occur when using the `RedbStore`.
+/// It wraps errors from the underlying redb database, serialization/deserialization errors,
+/// and I/O errors.
 #[derive(Debug)]
 pub enum RedbError {
     /// Error from the redb database
@@ -467,16 +509,42 @@ impl From<redb::TransactionError> for RedbError {
     }
 }
 
+/// Type alias for a pinned, boxed future that can be returned by async methods
 type FutureResult<'a, T, E> = Pin<Box<dyn Future<Output = Result<T, E>> + Send + 'a>>;
 
 impl WalletPersister for RedbStore {
     type Error = RedbError;
 
+    /// Initialize the wallet persister by loading the stored changeset
+    ///
+    /// This method is called by BDK when a wallet is being loaded.
+    /// It retrieves the stored wallet changeset from the database or returns
+    /// an empty changeset if none exists.
+    ///
+    /// # Returns
+    ///
+    /// - The stored wallet changeset, or an empty changeset if none exists
+    /// - An error if database access or deserialization fails
+    ///
     fn initialize(persister: &mut Self) -> Result<ChangeSet, Self::Error> {
         // Get changeset or return empty if none exists
         persister.get_changeset().map(|opt| opt.unwrap_or_default())
     }
 
+    /// Persist a wallet changeset to the database
+    ///
+    /// This method is called by BDK when wallet changes need to be saved.
+    /// It merges the new changeset with any existing one and stores the result.
+    ///
+    /// # Arguments
+    ///
+    /// * `changeset` - The wallet changeset to persist
+    ///
+    /// # Returns
+    ///
+    /// - `Ok(())` if the changeset was successfully stored
+    /// - An error if serialization or database access fails
+    ///
     fn persist(persister: &mut Self, changeset: &ChangeSet) -> Result<(), Self::Error> {
         // Get existing changeset if any
         let existing_changeset = persister.get_changeset()?;
@@ -498,6 +566,17 @@ impl WalletPersister for RedbStore {
 impl AsyncWalletPersister for RedbStore {
     type Error = RedbError;
 
+    /// Initialize the wallet persister asynchronously by loading the stored changeset
+    ///
+    /// This method is called by BDK when a wallet is being loaded asynchronously.
+    /// It retrieves the stored wallet changeset from the database or returns
+    /// an empty changeset if none exists.
+    ///
+    /// # Returns
+    ///
+    /// - A future that resolves to the stored wallet changeset, or an empty changeset if none exists
+    /// - An error if database access or deserialization fails
+    ///
     fn initialize<'a>(persister: &'a mut Self) -> FutureResult<'a, ChangeSet, Self::Error>
     where
         Self: 'a,
@@ -508,6 +587,19 @@ impl AsyncWalletPersister for RedbStore {
         })
     }
 
+    /// Persist a wallet changeset to the database asynchronously
+    ///
+    /// This method is called by BDK when wallet changes need to be saved asynchronously.
+    /// It merges the new changeset with any existing one and stores the result.
+    ///
+    /// # Arguments
+    ///
+    /// * `changeset` - The wallet changeset to persist
+    ///
+    /// # Returns
+    ///
+    /// - A future that resolves to `Ok(())` if the changeset was successfully stored
+    /// - An error if serialization or database access fails
     fn persist<'a>(
         persister: &'a mut Self,
         changeset: &'a ChangeSet,
