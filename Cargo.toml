@@ -1,0 +1,29 @@
+[package]
+name = "redb_wallet_storage"
+version = "0.1.0"
+edition = "2021"
+description = "A redb storage backend for Bitcoin Development Kit wallets"
+authors = ["Dikshant <dikshant.073@gmail.com>"]
+repository = "https://github.com/pingu-73/rust-redb"
+rust-version = "1.70.0"
+readme = "README.md"
+keywords = ["bitcoin", "wallet", "database", "redb"]
+categories = ["database", "cryptography::cryptocurrencies"]
+
+[dependencies]
+bdk_wallet = "1.1.0"
+redb = "2.4.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+bitcoin = "0.32.0"
+bdk_chain = "0.21.1"
+
+[dev-dependencies]
+tempfile = "3.8"
+tokio = { version = "1", features = ["full"] }
+anyhow = "1.0"
+bdk_esplora = { version = "0.20.1", features = ["blocking"] }
+
+[[example]]
+name = "wallet_esplora_blocking"
+path = "examples/wallet_esplora_blocking/main.rs"
