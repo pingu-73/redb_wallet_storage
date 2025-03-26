@@ -17,6 +17,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 bitcoin = "0.32.0"
 bdk_chain = "0.21.1"
+futures = "0.3.31"
 
 [dev-dependencies]
 tempfile = "3.8"
