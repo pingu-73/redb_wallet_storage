@@ -1,8 +1,8 @@
 # Redb Wallet Storage
-A redb-based storage backend for Bitcoin Development Kit (BDK) wallets.
+A redb-based storage backend for [Bitcoin Development Kit (BDK)](https://bitcoindevkit.org/) wallets.
 
 ## Overview
-`redb-wallet-storage` provides a storage backend for Bitcoin Development Kit (BDK) Wallets using [redb](https://github.com/cberner/redb), a pure-Rust embedded key-value store. This implementation offers an alternative to SQLite and file-based storage options.
+`redb-wallet-storage` provides a storage backend for [Bitcoin Development Kit (BDK)](https://bitcoindevkit.org/) Wallets using [redb](https://github.com/cberner/redb), a pure-Rust embedded key-value store. This implementation offers an alternative to SQLite and file-based storage options.
 
 ## Features
 - Implements wallet persistence traits for Bitcoin wallet libraries
@@ -11,7 +11,7 @@ A redb-based storage backend for Bitcoin Development Kit (BDK) wallets.
 - Pure Rust implementation
 
 ## Installation
-Add to you `Cargo.toml`
+Add to your `Cargo.toml`
 ```
 [dependencies]
 redb_wallet_storage = "0.1.0"
@@ -97,3 +97,6 @@ See the [examples](https://github.com/pingu-73/redb_wallet_storage/tree/main/exa
 
 ## Project Status
 This is a prototype implementation developed as part of a learning project. It may be adapted for use with BDK wallets.
+
+## Contribution
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
