@@ -96,7 +96,7 @@ async fn wallet_example() -> Result<(), Box<dyn std::error::Error>> {
 See the [examples](https://github.com/pingu-73/redb_wallet_storage/tree/main/examples/) directory 
 
 ## Project Status
-This is a prototype implementation developed as part of a learning project. It may be adapted for use with BDK wallets.
+This is a prototype implementation developed as part of a learning project.
 
 ## Contribution
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
