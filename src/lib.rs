@@ -462,7 +462,20 @@ impl std::fmt::Display for RedbError {
     }
 }
 
-impl std::error::Error for RedbError {}
+// impl std::error::Error for RedbError {}
+impl std::error::Error for RedbError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            Self::Database(e) => Some(e),
+            Self::Serialization(e) => Some(e),
+            Self::Deserialization(e) => Some(e),
+            Self::Io(e) => Some(e),
+            Self::Commit(e) => Some(e),
+            Self::Table(e) => Some(e),
+            Self::Transaction(e) => Some(e),
+        }
+    }
+}
 
 impl From<redb::DatabaseError> for RedbError {
     fn from(e: redb::DatabaseError) -> Self {
