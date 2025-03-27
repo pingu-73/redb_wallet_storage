@@ -84,12 +84,11 @@
 //!
 //! fn custom_config_example() -> Result<(), Box<dyn std::error::Error>> {
 //!     // Create a custom database configuration
-//!     let config = redb::Builder::new()
-//!         .set_cache_size(1024 * 1024 * 10) // 10 MB cache
-//!         .create_tables_if_missing(true);
+//!     let mut config = redb::Builder::new();
+//!     config.set_cache_size(1024 * 1024 * 10); // 10 MB cache
 //!     
 //!     // Create a store with custom configuration
-//!     let store = RedbStore::create_with_config("custom_wallet.redb", config)?;
+//!     let store = RedbStore::create_with_config("custom_wallet.redb", &mut config)?;
 //!     
 //!     Ok(())
 //! }
@@ -224,12 +223,16 @@ impl RedbStore {
     /// use redb_wallet_storage::RedbStore;
     ///
     /// // Create a custom configuration with a larger cache size
-    /// let config = redb::Builder::new().set_cache_size(1024 * 1024 * 20); // 20 MB cache
+    /// let mut config = redb::Builder::new();
+    /// config.set_cache_size(1024 * 1024 * 50); // 50 MB cache
     ///
-    /// let store = RedbStore::create_with_config("new_wallet_custom.redb", config).unwrap();
+    /// let store = RedbStore::create_with_config("updated_wallet.redb", &mut config).unwrap();
     /// ```
     ///
-    pub fn create_with_config<P>(file_path: P, config: redb::Builder) -> Result<Self, RedbError>
+    pub fn create_with_config<'a, P>(
+        file_path: P,
+        config: &'a mut redb::Builder,
+    ) -> Result<Self, RedbError>
     where
         P: AsRef<Path>,
     {
@@ -287,8 +290,8 @@ impl RedbStore {
     /// ```rust,no_run
     /// use redb_wallet_storage::RedbStore;
     ///
-    /// // Open with a custom configuration for read-only access
-    /// let config = redb::Builder::new().read_only(true);
+    /// // Open with a custom configuration
+    /// let config = redb::Builder::new();
     ///
     /// let store = RedbStore::open_with_config("existing_wallet.redb", config).unwrap();
     /// ```
@@ -352,8 +355,8 @@ impl RedbStore {
     /// let store = RedbStore::open("wallet.redb").unwrap();
     /// let stats = store.table_stats().unwrap();
     ///
-    /// println!("Wallet table entries: {}", stats.entries());
-    /// println!("Wallet table size: {} bytes", stats.table_size());
+    /// // You can inspect the table statistics
+    /// println!("Table stats: {:?}", stats);
     /// ```
     ///
     pub fn table_stats(&self) -> Result<redb::TableStats, RedbError> {
