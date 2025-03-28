@@ -1,10 +1,10 @@
 # Redb Wallet Storage
 **A redb-based storage backend for [Bitcoin Development Kit (BDK)](https://bitcoindevkit.org/) wallets.**
 <div align="center">
-  <p>
+<!--   <p> -->
 <!--     <a href="https://crates.io/crates/redb_wallet_storage"><img alt="Crate Info" src="https://img.shields.io/crates/v/bdk_wallet.svg"/></a> -->
 <!--     <a href="https://github.com/pingu-73/redb_wallet_storage/blob/main/LICENSE"><img alt="MIT or Apache-2.0 Licensed" src="https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg"/></a> -->
-  </p>
+<!--   </p> -->
 
   <h4>
     <a href="https://docs.rs/redb_wallet_storage">Documentation</a>
