@@ -9,7 +9,7 @@
   <h4>
     <a href="https://docs.rs/redb_wallet_storage">Documentation</a>
     <span> | </span>
-    <a href="https://docs.rs/redb_wallet_storage">Crates.io</a>
+    <a href="https://crates.io/crates/redb_wallet_storage">Crates.io</a>
     <span> | </span>
     <a href="https://github.com/pingu-73/redb_wallet_storage/blob/main/LICENSE">MIT or Apache-2.0 Licensed</a>
 
