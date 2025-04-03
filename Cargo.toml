@@ -1,6 +1,6 @@
 [package]
 name = "redb_wallet_storage"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "A redb storage backend for Bitcoin Development Kit wallets"
 authors = ["Dikshant <dikshant.073@gmail.com>"]
