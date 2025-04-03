@@ -229,9 +229,9 @@ impl RedbStore {
     /// let store = RedbStore::create_with_config("updated_wallet.redb", &mut config).unwrap();
     /// ```
     ///
-    pub fn create_with_config<'a, P>(
+    pub fn create_with_config<P>(
         file_path: P,
-        config: &'a mut redb::Builder,
+        config: &mut redb::Builder,
     ) -> Result<Self, RedbError>
     where
         P: AsRef<Path>,
