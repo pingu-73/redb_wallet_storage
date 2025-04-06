@@ -20,6 +20,7 @@ bdk_chain = "0.21.1"
 futures = "0.3.31"
 
 [dev-dependencies]
+criterion = "0.5.1"
 tempfile = "3.8"
 tokio = { version = "1", features = ["full"] }
 anyhow = "1.0"
@@ -38,3 +39,14 @@ path = "examples/wallet_esplora_blocking/main.rs"
 [[example]]
 name = "basic_usage"
 path = "examples/basic_usage/main.rs"
+
+[dependencies.bdk_file_store]
+version = "0.18.1"
+optional = true
+
+[features]
+file_store_comparison = ["dep:bdk_file_store"]
+
+[[bench]]
+name = "wallet_benchmarks"
+harness = false
