@@ -20,10 +20,17 @@ bdk_chain = "0.21.1"
 futures = "0.3.31"
 
 [dev-dependencies]
+criterion = "0.5.1"
 tempfile = "3.8"
 tokio = { version = "1", features = ["full"] }
 anyhow = "1.0"
 bdk_esplora = { version = "0.20.1", features = ["blocking"] }
+miniscript = { version = "12.3.1", features = [ "serde" ], default-features = false }
+assert_matches = "1.5.0"
+rand = "^0.8"
+bdk_file_store = { version = "0.18.1" }
+bdk_chain = { version = "0.21.1", features = ["rusqlite"] }
+bdk_wallet = { version = "1.1.0", features = ["rusqlite", "file_store"] }
 
 [[example]]
 name = "wallet_esplora_blocking"
@@ -32,3 +39,14 @@ path = "examples/wallet_esplora_blocking/main.rs"
 [[example]]
 name = "basic_usage"
 path = "examples/basic_usage/main.rs"
+
+[dependencies.bdk_file_store]
+version = "0.18.1"
+optional = true
+
+[features]
+file_store_comparison = ["dep:bdk_file_store"]
+
+[[bench]]
+name = "wallet_benchmarks"
+harness = false
